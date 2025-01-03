@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {v4 as uuidv4} from 'uuid';
 export default function TodoList() {
-    let[todos, setTodos] = useState([{task:"Sample Task", id:uuidv4()}]);
+    let[todos, setTodos] = useState([{task:"Sample Task", id:uuidv4(), isDone:false}]);
     let[newTodos, setNewTodos] = useState("");
 
     let addnewtask = () =>{
@@ -9,7 +9,7 @@ export default function TodoList() {
         setTodos((prevTodos)=>{
         return[...prevTodos,{task:newTodos, id:uuidv4()}];
     });
-    
+
         setNewTodos("");    //to make placeholder empty after adding a task
     }
 
@@ -20,6 +20,32 @@ export default function TodoList() {
 
     let deleteTodo = (id)=>{
          setTodos((prevTodos)=>todos.filter((prevTodos)=>prevTodos.id != id));
+    };
+
+    let markAsDone = (id) => {
+        setTodos((prevTodos) => 
+            prevTodos.map((todo)=>{
+                if(todo.id==id){
+                    return{
+                        ...todo,
+                        isDone:true,
+                    };
+                }else{
+                    return todo;
+                }
+            })
+        );
+    };
+
+    let markAsDoneAll = () => {
+        setTodos((prevTodos) => 
+            prevTodos.map((todo)=>{
+               return{
+                ...todo,
+                isDone:true,
+               };
+            })
+        );
     };
 
   return (
@@ -37,13 +63,16 @@ export default function TodoList() {
            {
             todos.map((todo) => (
                 <li key={todo.id}>
-                    <span>{todo.task}</span>
+                    <span style={todo.isDone?{textDecorationLine:"line-through"}:{}}>{todo.task}</span>
                     &nbsp;&nbsp;&nbsp;
                     <button onClick={()=>deleteTodo(todo.id)}>delete</button>
+                    <button onClick={()=>markAsDone(todo.id)}>M-A-D</button>
                 </li>
             ))
           }
       </ul>
+      <br></br>
+      <button onClick = {markAsDoneAll}>M-A-D-A</button>
     </>
   );
 }
